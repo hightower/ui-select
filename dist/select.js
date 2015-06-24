@@ -1,7 +1,7 @@
 /*!
  * ui-select
  * http://github.com/angular-ui/ui-select
- * Version: 0.12.0 - 2015-05-28T07:44:11.360Z
+ * Version: 0.12.0 - 2015-06-10T12:28:19.434Z
  * License: MIT
  */
 
@@ -700,6 +700,20 @@ uis.controller('uiSelectCtrl',
     }
 
   });
+  
+  //Allow tagging on blur
+  ctrl.searchInput.on('blur', function() {
+    if ((ctrl.items.length > 0 || ctrl.tagging.isActivated) && ctrl.tagOnBlur) {
+          $timeout(function() {
+            ctrl.searchInput.triggerHandler('tagged');
+            var newItem = ctrl.search;
+            if ( ctrl.tagging.fct ) {
+              newItem = ctrl.tagging.fct( newItem );
+            }
+            if (newItem) ctrl.select(newItem, true);
+          });
+        }
+    });
 
   // If tagging try to split by tokens and add items
   ctrl.searchInput.on('paste', function (e) {
@@ -848,6 +862,17 @@ uis.directive('uiSelect',
           else
           {
             $select.tagging = {isActivated: false, fct: undefined};
+          }
+        });
+
+        attrs.$observe('tagOnBlur', function() {
+          if(attrs.tagOnBlur !== undefined && attrs.tagOnBlur === 'true')
+          {
+              $select.tagOnBlur = true;
+          }
+          else
+          {
+              $select.tagOnBlur = false;            
           }
         });
 
