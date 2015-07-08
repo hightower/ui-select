@@ -43,7 +43,7 @@ uis.controller('uiSelectCtrl',
   if (ctrl.searchInput.length !== 1) {
     throw uiSelectMinErr('searchInput', "Expected 1 input.ui-select-search but got '{0}'.", ctrl.searchInput.length);
   }
-  
+
   ctrl.isEmpty = function() {
     return angular.isUndefined(ctrl.selected) || ctrl.selected === null || ctrl.selected === '';
   };
@@ -52,10 +52,6 @@ uis.controller('uiSelectCtrl',
   function _resetSearchInput() {
     if (ctrl.resetSearchInput || (ctrl.resetSearchInput === undefined && uiSelectConfig.resetSearchInput)) {
       ctrl.search = EMPTY_SEARCH;
-      //reset activeIndex
-      if (ctrl.selected && ctrl.items.length && !ctrl.multiple) {
-        ctrl.activeIndex = ctrl.items.indexOf(ctrl.selected);
-      }
     }
   }
 
@@ -463,7 +459,7 @@ uis.controller('uiSelectCtrl',
     }
 
   });
-  
+
   //Allow tagging on blur
   ctrl.searchInput.on('blur', function() {
     if ((ctrl.items.length > 0 || ctrl.tagging.isActivated) && ctrl.tagOnBlur) {

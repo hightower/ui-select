@@ -52,7 +52,6 @@ uis.directive('uiSelectChoices',
 
         scope.$watch('$select.search', function(newValue) {
           if(newValue && !$select.open && $select.multiple) $select.activate(false, true);
-          $select.activeIndex = $select.tagging.isActivated ? -1 : 0;
           $select.refresh(attrs.refresh);
         });
 
