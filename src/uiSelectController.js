@@ -282,6 +282,8 @@ uis.controller('uiSelectCtrl',
 
         $scope.$broadcast('uis:select', item);
 
+        _resetSearchInput();
+
         var locals = {};
         locals[ctrl.parserResult.itemName] = item;
 
