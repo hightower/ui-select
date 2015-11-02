@@ -244,7 +244,7 @@ uis.controller('uiSelectCtrl',
         if(ctrl.tagging.isActivated) {
           // if taggingLabel is disabled, we pull from ctrl.search val
           if ( ctrl.taggingLabel === false ) {
-            if ( ctrl.activeIndex < 0 ) {
+            if ( ctrl.activeIndex < 0 || ctrl.items.length === 0 ) {
               item = ctrl.tagging.fct !== undefined ? ctrl.tagging.fct(ctrl.search) : ctrl.search;
               if (!item || angular.equals( ctrl.items[0], item ) ) {
                 return;
