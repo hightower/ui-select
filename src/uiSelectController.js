@@ -476,18 +476,40 @@ uis.controller('uiSelectCtrl',
         }
     });
 
-  // If tagging try to split by tokens and add items
+  // https://raw.githubusercontent.com/atomx/ui-select/5b852b372abff998f7bb5ef984dd6e1033446784/src/uiSelectController.js
   ctrl.searchInput.on('paste', function (e) {
-    var data = e.originalEvent.clipboardData.getData('text/plain');
-    if (data && data.length > 0 && ctrl.taggingTokens.isActivated && ctrl.tagging.fct) {
-      var items = data.split(ctrl.taggingTokens.tokens[0]); // split by first token only
-      if (items && items.length > 0) {
-        angular.forEach(items, function (item) {
-          var newItem = ctrl.tagging.fct(item);
-          if (newItem) {
-            ctrl.select(newItem, true);
-          }
-        });
+    var data;
+
+    if (window.clipboardData && window.clipboardData.getData) { // IE
+      data = window.clipboardData.getData('Text');
+    } else {
+      data = (e.originalEvent || e).clipboardData.getData('text/plain');
+    }
+
+    // Prepend the current input field text to the paste buffer.
+    data = ctrl.search + data;
+
+    if (data && data.length > 0) {
+      // If tagging try to split by tokens and add items
+      if (ctrl.taggingTokens.isActivated) {
+        var items = data.split(/\s+|,\s*/); // split by spaces and commas
+
+        if (items && items.length > 0) {
+          angular.forEach(items, function (item) {
+            var newItem = ctrl.tagging.fct ? ctrl.tagging.fct(item) : item;
+            if (newItem) {
+              ctrl.search = newItem.email; // set search to email before selecting -- modified from PR
+              ctrl.select(newItem, true);
+              ctrl.search = EMPTY_SEARCH; // unset search -- modified from PR
+            }
+          });
+          ctrl.search = EMPTY_SEARCH;
+          e.preventDefault();
+          e.stopPropagation();
+        }
+      } else if (ctrl.paste) {
+        ctrl.paste(data);
+        ctrl.search = EMPTY_SEARCH;
         e.preventDefault();
         e.stopPropagation();
       }
